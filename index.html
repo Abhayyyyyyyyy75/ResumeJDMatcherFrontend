@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Resume-JD Matcher AI</title>
+</head>
+<body>
+  <h2>Upload Resume & Job Description (PDF)</h2>
+  <form id="uploadForm">
+    <input type="file" id="resume" name="resume" accept=".pdf" required /><br/><br/>
+    <input type="file" id="jd" name="jd" accept=".pdf" required /><br/><br/>
+    <button type="submit">Check Compatibility</button>
+  </form>
+  <h3 id="result"></h3>
+
+  <script>
+    const form = document.getElementById("uploadForm");
+    const result = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("resume", document.getElementById("resume").files[0]);
+      formData.append("jd", document.getElementById("jd").files[0]);
+
+      const response = await fetch("http://localhost:5000/api/match", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      result.textContent = "Compatibility Score: " + data.score.toFixed(2) +
+        (data.match ? " ✅ Good Match" : " ❌ Poor Match");
+    });
+  </script>
+</body>
+</html>
